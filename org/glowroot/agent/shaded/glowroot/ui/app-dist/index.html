@@ -1,0 +1,150 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Glowroot</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  
+  <base href="/">
+
+  
+  <link rel="shortcut icon" href="favicon.bb02823f.ico">
+
+  <link rel="stylesheet" href="styles/main.acafb6d7.css">
+
+  <!--[if IE 9]>
+  <script>
+    if (contextPath !== '/' && location.pathname === contextPath) {
+      location.pathname += '/';
+    }
+  </script>
+  <![endif]-->
+
+  <script>
+    if (document.fonts) {
+      new FontFace('Open Sans',
+          'url(fonts/opensans-regular.4c9a4bc2.woff2) format("woff2"),' +
+          ' url(fonts/opensans-regular.cb721d9f.woff) format("woff")',
+          {weight: '400'}).load();
+      new FontFace('Open Sans',
+          'url(fonts/opensans-semibold.f3515b8f.woff2) format("woff2"),' +
+          ' url(fonts/opensans-semibold.4691b988.woff) format("woff")',
+          {weight: '600'}).load();
+      new FontFace('Open Sans',
+          'url(fonts/opensans-bold.766fc545.woff2) format("woff2"),' +
+          ' url(fonts/opensans-bold.107bc2e1.woff) format("woff")',
+          {weight: '700'}).load();
+      new FontFace('FontAwesome',
+          'url(fonts/fontawesome-webfont.af7ae505.woff2) format("woff2"),' +
+          'url(fonts/fontawesome-webfont.fee66e71.woff) format("woff")').load();
+      new FontFace('Cousine',
+          'url(fonts/cousine-regular.3e61d0be.woff2) format("woff2"),' +
+          ' url(fonts/cousine-regular.0dd010e5.woff) format("woff")',
+          {weight: '400'}).load();
+    }
+  </script>
+</head>
+<body ng-app="glowroot" id="ng-app">
+<!--[if lt IE 9]>
+<style>
+  body div {
+    display: none;
+  }
+</style>
+<p style="text-align: center; padding-top: 50px; font-size: 20px;">
+  Glowroot UI does not support IE8 or prior
+</p>
+<![endif]-->
+<header class="navbar navbar-inverse navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" ng-if="!hideNavbar()" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="navbar-brand">
+        Glowroot
+      </div>
+    </div>
+    <div class="ng-cloak" ng-hide="hideNavbar()" ng-controller="NavbarCtrl">
+      <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <div gt-navbar-item gt-display="Transactions" gt-item-name="transaction" gt-url="transaction/average{{queryString(true, true)}}" ng-if="layout.showNavbarTransaction">
+          </div>
+          <div gt-navbar-item gt-display="Errors" gt-item-name="error" gt-url="error/messages{{queryString(true, true)}}" ng-if="layout.showNavbarError">
+          </div>
+          <div gt-navbar-item gt-display="JVM" gt-item-name="jvm" gt-url="jvm/gauges{{queryString(true)}}" ng-if="layout.showNavbarJvm">
+          </div>
+          <div gt-navbar-item gt-display="Synthetic" gt-item-name="syntheticMonitor" gt-url="synthetic-monitors{{queryString(true)}}" ng-if="layout.central && layout.showNavbarSyntheticMonitor">
+          </div>
+          <div gt-navbar-item gt-display="Incidents" gt-item-name="incident" gt-url="incidents" ng-if="layout.showNavbarIncident">
+          </div>
+          <div gt-navbar-item gt-display="Reporting" gt-item-name="report" gt-url="report/ad-hoc" ng-if="layout.showNavbarReport">
+          </div>
+        </ul>
+        <ul class="nav navbar-nav navbar-right" style="margin-right: 0">
+          <li class="dropdown ng-cloak" ng-class="{active: activeNavbarItem === 'gears'}" ng-if="layout.showNavbarConfig || layout.adminView || !layout.loggedIn && layout.loginEnabled || layout.loggedIn && !layout.ldap">
+            
+            <a role="button" class="dropdown-toggle" data-toggle="dropdown" href="#" id="gtGearsMenuToggle">
+              <span class="fa fa-gears" style="display: block; font-size: 24px; margin-top: -1px; margin-bottom: -1px"></span>
+            </a>
+            
+            <ul class="dropdown-menu" id="gtGearsMenu">
+              <li ng-if="layout.showNavbarConfig">
+                <a ng-href="{{configUrl()}}" style="padding-top: 5px; padding-bottom: 5px">
+                  {{layout.central ? 'Agent configuration' : 'Configuration'}}
+                </a>
+              </li>
+              <li ng-if="layout.adminView">
+                <a ng-href="{{layout.central ? 'admin/agent-list' : 'admin/user-list'}}" style="padding-top: 5px; padding-bottom: 5px">
+                  Administration
+                </a>
+              </li>
+              <li ng-if="!layout.loggedIn && layout.loginEnabled">
+                <a href="login" ng-click="goToLogin($event)" style="padding-top: 5px; padding-bottom: 5px">
+                  Login
+                </a>
+              </li>
+              <li ng-if="layout.loggedIn && !layout.ldap">
+                <a ng-href="profile/change-password" style="padding-top: 5px; padding-bottom: 5px">
+                  Change my password
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="ng-cloak" ng-if="layout.loggedIn">
+            <a href="#" ng-click="signOut()" style="padding-top: 14px; padding-bottom: 0; height: 50px">
+              <span title="Sign out" class="fa fa-sign-out" style="display: block; font-size: 24px; margin-top: -1px; margin-bottom: -3px"></span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+<div class="ng-cloak gt-button-message-success" ng-if="displaySignOutMessage" style="text-align: center; font-size: 20px; font-weight: 600">
+  You have been signed out
+</div>
+<div class="ng-cloak gt-button-message-error" ng-if="navbarErrorMessage" style="text-align: center; font-size: 20px; font-weight: 600">
+  {{navbarErrorMessage}}
+</div>
+<div class="container" id="container">
+  
+  <div ui-view></div>
+  <div id="push"></div>
+</div>
+<div class="ng-cloak" id="footer">
+  Glowroot version {{layout.glowrootVersion}}
+</div>
+
+<script src="scripts/vendor.c7804a98.js"></script>
+
+<script src="scripts/scripts.e4510b05.js"></script>
+
+<script async src="scripts/vendor-flame-graph.2bf954e8.js"></script>
+</body>
+</html>
